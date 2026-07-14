@@ -6,7 +6,7 @@
 
 > **默认没有——要装**。装完后：普通消息零足迹；以「诊断:」/「diag:」开头的消息自动记录成
 > 可检查的 trace 树（配 `TDB_OBS_MODE=always` 则全量记录）。完整用户文档见 3db 控制台
-> **/docs/onboarding（接入指南）**。
+> **/docs/llmobs 第三部分（接入与命令参考）**。
 
 ## 前提
 
@@ -70,7 +70,7 @@ D=$(mktemp -d); echo '{"session_id":"t","prompt":"诊断: 自检","transcript_pa
 
 端到端：**开新会话** → 问题以「诊断:」开头正常提问 → 别中途打断 → 控制台
 LLM Observability · Traces 刷新，应看到完整的树（根 🌳 + 推理 🧠 + 工具 🔧）。
-排查表见控制台 /docs/onboarding 或 `claude-code-hooks/README.md`。
+排查见控制台 /docs/llmobs（第三部分与附录）或 `claude-code-hooks/README.md`。
 
 ## 仓库结构
 
