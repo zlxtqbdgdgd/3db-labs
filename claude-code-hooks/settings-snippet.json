@@ -1,0 +1,33 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node /ABSOLUTE/PATH/TO/3db-client-kit/claude-code-hooks/user-prompt-submit.mjs" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__3db.*",
+        "hooks": [
+          { "type": "command", "command": "node /ABSOLUTE/PATH/TO/3db-client-kit/claude-code-hooks/pre-tool-use.mjs" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "TDB_OBS_REPORT_URL='http://<3db-mcp地址>/api/v2/llmobs/spans' TDB_OBS_API_KEY='<填入3db_开头的API key>' node /ABSOLUTE/PATH/TO/3db-client-kit/claude-code-hooks/stop.mjs" }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "TDB_OBS_REPORT_URL='http://<3db-mcp地址>/api/v2/llmobs/spans' TDB_OBS_API_KEY='<填入3db_开头的API key>' node /ABSOLUTE/PATH/TO/3db-client-kit/claude-code-hooks/stop.mjs" }
+        ]
+      }
+    ]
+  }
+}

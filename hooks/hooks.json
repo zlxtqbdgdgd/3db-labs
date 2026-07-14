@@ -1,0 +1,53 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/user-prompt-submit.mjs\"",
+            "timeout": 10,
+            "statusMessage": "3db-obs: mint trace"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__3db.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/pre-tool-use.mjs\"",
+            "timeout": 10,
+            "statusMessage": "3db-obs: inject trace context"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/stop.mjs\"",
+            "timeout": 15,
+            "statusMessage": "3db-obs: synthesize spans"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/stop.mjs\"",
+            "timeout": 15,
+            "statusMessage": "3db-obs: synthesize spans"
+          }
+        ]
+      }
+    ]
+  }
+}

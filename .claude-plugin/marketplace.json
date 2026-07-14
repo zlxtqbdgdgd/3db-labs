@@ -1,0 +1,11 @@
+{
+  "name": "3db-labs",
+  "owner": { "name": "3db" },
+  "plugins": [
+    {
+      "name": "3db-agent-obs",
+      "source": "./",
+      "description": "3db Agent Observability hooks：铸造/传播/合成 trace（UserPromptSubmit + PreToolUse + Stop/SubagentStop），装完即挂全局，配 TDB_OBS_* 环境变量即用"
+    }
+  ]
+}
