@@ -178,6 +178,8 @@ run(async () => {
     const msg = last.message; // usage/stop_reason 各行重复，取末行；输出拼全组
     // 时长近似：前一条 entry 落盘 → 组内末行落盘。含少量客户端编组开销、略高估；
     // 打 duration_estimated 标与真实测量区分（DD SDK 包住 API 调用才有真时长）。
+    // ts 用同一基线（startTs）——否则 ts=首行落盘 + duration=从前一条起算，
+    // span 终点会越过 root 终点（0.2.0 实测 39s 过冲）。
     const duration = msBetween(g.startTs, last.timestamp);
     spans.push({
       trace_id: state.trace_id,
@@ -188,7 +190,7 @@ run(async () => {
       name: "anthropic.messages",
       model: msg.model ?? null,
       status: "ok",
-      ts: first.timestamp ?? new Date().toISOString(),
+      ts: (duration != null ? g.startTs : first.timestamp) ?? new Date().toISOString(),
       duration_ms: duration,
       input: null, // 每轮完整 prompt = 之前全部对话，逐轮重复入盘不划算；任务级 in/out 在 root
       output: cap(g.entries.map((e) => assistantText(e.message?.content)).filter(Boolean).join("\n")),
