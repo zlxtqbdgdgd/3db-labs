@@ -6,7 +6,7 @@ import path from "node:path";
 
 /** 状态/产物目录（每 session 一个状态文件 + 共享 spans.jsonl）。 */
 export function obsDir() {
-  return process.env.TDB_OBS_DIR?.trim() || path.join(os.homedir(), ".claude", "3db-obs");
+  return process.env.DBDOG_OBS_DIR?.trim() || path.join(os.homedir(), ".claude", "dbdog-obs");
 }
 
 export function statePath(sessionId) {
@@ -15,7 +15,7 @@ export function statePath(sessionId) {
 
 /** spans 输出（Phase A 本地 JSONL；Phase C 起改 POST 上报，见 ADR-0008/课题 §5）。 */
 export function spansPath() {
-  return process.env.TDB_OBS_SPANS?.trim() || path.join(obsDir(), "spans.jsonl");
+  return process.env.DBDOG_OBS_SPANS?.trim() || path.join(obsDir(), "spans.jsonl");
 }
 
 export function readState(sessionId) {
@@ -38,17 +38,17 @@ export function appendSpans(spans) {
 }
 
 /**
- * 上报 3db（Phase C，课题 §5 信道①）：POST 到 mcp 边缘代理（或 server 直连），
+ * 上报 dbdog（Phase C，课题 §5 信道①）：POST 到 mcp 边缘代理（或 server 直连），
  * DD-API-KEY 鉴权（server 侧 key→org 租户路由）。两个 env 齐备才发；短超时、
  * 吞错——本地 JSONL 永远先落（真相源），上报失败不丢数据、不打扰会话。
- *   TDB_OBS_REPORT_URL  填 3db-mcp 的边缘口：http://<mcp地址>/api/v2/llmobs/spans
- *                       （mcp 原样转发内网 3db-server；用户机器不直连 server。
+ *   DBDOG_OBS_REPORT_URL  填 dbdog-mcp 的边缘口：http://<mcp地址>/api/v2/llmobs/spans
+ *                       （mcp 原样转发内网 dbdog-server；用户机器不直连 server。
  *                        server 直连仅限内网部署场景。）
- *   TDB_OBS_API_KEY     3db API key（控制台 settings/api-keys 签发）
+ *   DBDOG_OBS_API_KEY     dbdog API key（控制台 settings/api-keys 签发）
  */
 export async function reportSpans(spans) {
-  const url = process.env.TDB_OBS_REPORT_URL?.trim();
-  const key = process.env.TDB_OBS_API_KEY?.trim();
+  const url = process.env.DBDOG_OBS_REPORT_URL?.trim();
+  const key = process.env.DBDOG_OBS_API_KEY?.trim();
   if (!url || !key || !spans.length) return false;
   try {
     const response = await fetch(url, {
@@ -64,9 +64,9 @@ export async function reportSpans(spans) {
   }
 }
 
-/** 内容截断上限（对齐 mcp 的 TDB_TELEMETRY_OUTPUT_CHARS 先例，默认 8000）。 */
+/** 内容截断上限（对齐 mcp 的 DBDOG_TELEMETRY_OUTPUT_CHARS 先例，默认 8000）。 */
 export function contentCap() {
-  const n = Number(process.env.TDB_OBS_CONTENT_CHARS ?? "");
+  const n = Number(process.env.DBDOG_OBS_CONTENT_CHARS ?? "");
   return Number.isFinite(n) && n > 0 ? n : 8000;
 }
 
@@ -85,7 +85,7 @@ export async function readStdinJson() {
 /** 顶层包装：出错只写 stderr、永远 exit 0（hook 不得打断会话）。 */
 export function run(main) {
   main().catch((err) => {
-    process.stderr.write(`[3db-obs hook] ${err?.stack ?? err}\n`);
+    process.stderr.write(`[dbdog-obs hook] ${err?.stack ?? err}\n`);
     process.exit(0);
   });
 }

@@ -7,20 +7,20 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/user-prompt-submit.mjs\"",
             "timeout": 10,
-            "statusMessage": "3db-obs: mint trace"
+            "statusMessage": "dbdog-obs: mint trace"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "mcp__3db.*",
+        "matcher": "mcp__dbdog.*",
         "hooks": [
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/pre-tool-use.mjs\"",
             "timeout": 10,
-            "statusMessage": "3db-obs: inject trace context"
+            "statusMessage": "dbdog-obs: inject trace context"
           }
         ]
       }
@@ -32,7 +32,7 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/stop.mjs\"",
             "timeout": 15,
-            "statusMessage": "3db-obs: synthesize spans"
+            "statusMessage": "dbdog-obs: synthesize spans"
           }
         ]
       }
@@ -44,7 +44,7 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/claude-code-hooks/stop.mjs\"",
             "timeout": 15,
-            "statusMessage": "3db-obs: synthesize spans"
+            "statusMessage": "dbdog-obs: synthesize spans"
           }
         ]
       }

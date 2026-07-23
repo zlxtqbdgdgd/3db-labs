@@ -13,16 +13,16 @@ run(async () => {
   const sessionId = input.session_id;
   if (!sessionId) return;
 
-  // —— 触发门（TDB_OBS_MODE，2026-07-11 用户定：触发了才建 trace，不触发零足迹）——
-  //   always     每条消息都记（诊断专用目录用，如 3db-test）
-  //   triggered  默认：prompt 以触发词开头才记（TDB_OBS_TRIGGER，默认「诊断:」；
+  // —— 触发门（DBDOG_OBS_MODE，2026-07-11 用户定：触发了才建 trace，不触发零足迹）——
+  //   always     每条消息都记（诊断专用目录用，如 dbdog-test）
+  //   triggered  默认：prompt 以触发词开头才记（DBDOG_OBS_TRIGGER，默认「诊断:」；
   //              另恒收 "diag:" 小写前缀作英文触发）
   //   off        彻底关闭
   // 未触发时必须把既有 state 置 inactive——否则本轮的工具调用会被 PreToolUse 注入
   // 上一条 trace 的 id、Stop 会把本轮的模型消息合成进上一条 trace（错误归属）。
-  const mode = (process.env.TDB_OBS_MODE?.trim() || "triggered").toLowerCase();
+  const mode = (process.env.DBDOG_OBS_MODE?.trim() || "triggered").toLowerCase();
   const promptText = (typeof input.prompt === "string" ? input.prompt : "").trimStart();
-  const trigger = process.env.TDB_OBS_TRIGGER?.trim() || "诊断:";
+  const trigger = process.env.DBDOG_OBS_TRIGGER?.trim() || "诊断:";
   // 冒号全半角归一（2026-07-11 用户提出）：中文输入法默认全角「：」，「诊断：」也必须触发；
   // 自定义触发词同样归一后比较，两种冒号都收。
   const norm = (s) => s.replace(/：/g, ":");
@@ -36,10 +36,10 @@ run(async () => {
     return;
   }
 
-  // ml_app（DD llmobs 一等维度的 3db 对应物）：区分「哪个应用/项目的 trace」——
+  // ml_app（DD llmobs 一等维度的 dbdog 对应物）：区分「哪个应用/项目的 trace」——
   // 复盘按它过滤，编码会话和真诊断才分得开。env 显式配 > 项目目录名兜底。
   const mlApp =
-    process.env.TDB_OBS_ML_APP?.trim() || path.basename(input.cwd || process.cwd()) || "unknown";
+    process.env.DBDOG_OBS_ML_APP?.trim() || path.basename(input.cwd || process.cwd()) || "unknown";
 
   const traceId = crypto.randomBytes(16).toString("hex"); // 32 hex（W3C trace-id 形状）
   const rootSpanId = traceId.slice(0, 16); // 16 hex，确定性派生
