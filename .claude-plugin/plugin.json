@@ -1,5 +1,5 @@
 {
-  "name": "3db-agent-obs",
-  "version": "0.2.1",
-  "description": "3db Agent Observability client hooks for Claude Code（mint → propagate → synthesize；脚本本体在 claude-code-hooks/，hooks/hooks.json 经 ${CLAUDE_PLUGIN_ROOT} 引用）"
+  "name": "dbdog-agent-obs",
+  "version": "0.3.0",
+  "description": "dbdog Agent Observability client hooks for Claude Code（mint → propagate → synthesize；脚本本体在 claude-code-hooks/，hooks/hooks.json 经 ${CLAUDE_PLUGIN_ROOT} 引用）"
 }

@@ -69,7 +69,7 @@ run(async () => {
   const input = await readStdinJson();
   const state = readState(input.session_id);
   const transcript = input.transcript_path ?? state?.transcript_path;
-  // 无 trace 归属或本轮未触发（TDB_OBS_MODE 触发门）→ 不产 span、不上报
+  // 无 trace 归属或本轮未触发（DBDOG_OBS_MODE 触发门）→ 不产 span、不上报
   if (!state?.trace_id || state.active === false || !transcript) return;
 
   const { lines, nextCursor } = readNewLines(transcript, state.cursor ?? 0);

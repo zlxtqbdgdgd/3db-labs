@@ -1,11 +1,11 @@
 {
-  "name": "3db-labs",
-  "owner": { "name": "3db" },
+  "name": "dbdog-labs",
+  "owner": { "name": "dbdog" },
   "plugins": [
     {
-      "name": "3db-agent-obs",
+      "name": "dbdog-agent-obs",
       "source": "./",
-      "description": "3db Agent Observability hooks：铸造/传播/合成 trace（UserPromptSubmit + PreToolUse + Stop/SubagentStop），装完即挂全局，配 TDB_OBS_* 环境变量即用"
+      "description": "dbdog Agent Observability hooks：铸造/传播/合成 trace（UserPromptSubmit + PreToolUse + Stop/SubagentStop），装完即挂全局，配 DBDOG_OBS_* 环境变量即用"
     }
   ]
 }

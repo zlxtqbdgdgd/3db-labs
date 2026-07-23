@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 function tempObsDir() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "3db-obs-hooks-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "dbdog-obs-hooks-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -24,10 +24,10 @@ function runHook(script, input, obsDir, extraEnv = {}) {
     encoding: "utf8",
     env: {
       ...process.env,
-      TDB_OBS_MODE: "triggered",
-      TDB_OBS_TRIGGER: "诊断:",
-      TDB_OBS_DIR: obsDir,
-      TDB_OBS_SPANS: path.join(obsDir, "spans.jsonl"),
+      DBDOG_OBS_MODE: "triggered",
+      DBDOG_OBS_TRIGGER: "诊断:",
+      DBDOG_OBS_DIR: obsDir,
+      DBDOG_OBS_SPANS: path.join(obsDir, "spans.jsonl"),
       ...extraEnv,
     },
   });
@@ -64,7 +64,7 @@ describe("Agent Obs hook trigger", () => {
       "user-prompt-submit.mjs",
       { session_id: "always", prompt: "ordinary", cwd: "/tmp" },
       alwaysDir,
-      { TDB_OBS_MODE: "always" },
+      { DBDOG_OBS_MODE: "always" },
     );
     expect(readState(alwaysDir, "always").active).toBe(true);
 
@@ -73,7 +73,7 @@ describe("Agent Obs hook trigger", () => {
       "user-prompt-submit.mjs",
       { session_id: "off", prompt: "诊断: should stay off", cwd: "/tmp" },
       offDir,
-      { TDB_OBS_MODE: "off" },
+      { DBDOG_OBS_MODE: "off" },
     );
     expect(fs.existsSync(path.join(offDir, "off.json"))).toBe(false);
   });
@@ -88,7 +88,7 @@ describe("Agent Obs hook trigger", () => {
     const active = readState(dir, "same");
     const activeOutput = runHook(
       "pre-tool-use.mjs",
-      { session_id: "same", tool_name: "mcp__3db__metric", tool_input: { telemetry: { intent: "inspect" } } },
+      { session_id: "same", tool_name: "mcp__dbdog__metric", tool_input: { telemetry: { intent: "inspect" } } },
       dir,
     );
     const updated = JSON.parse(activeOutput).hookSpecificOutput.updatedInput;
@@ -106,7 +106,7 @@ describe("Agent Obs hook trigger", () => {
     expect(readState(dir, "same").active).toBe(false);
     const inactiveOutput = runHook(
       "pre-tool-use.mjs",
-      { session_id: "same", tool_name: "mcp__3db__metric", tool_input: { telemetry: { intent: "inspect" } } },
+      { session_id: "same", tool_name: "mcp__dbdog__metric", tool_input: { telemetry: { intent: "inspect" } } },
       dir,
     );
     expect(inactiveOutput).toBe("");
@@ -169,7 +169,7 @@ describe("Stop hook span synthesis", () => {
             {
               type: "tool_use",
               id: "tu_mcp",
-              name: "mcp__3db-mcp__get_llmobs_trace",
+              name: "mcp__dbdog-mcp__get_llmobs_trace",
               input: {
                 trace_id: "beef",
                 telemetry: { intent: "look up trace", trace_id: "a".repeat(32), parent_span_id: "a".repeat(16) },
@@ -239,7 +239,7 @@ describe("Stop hook span synthesis", () => {
     // MCP 工具：名字剥前缀、telemetry 块剥离、intent 提为一等字段；失败调用也留 span
     const mcp = tools.find((s) => s.name === "get_llmobs_trace");
     expect(mcp.status).toBe("error");
-    expect(mcp.tags.mcp_server).toBe("3db-mcp");
+    expect(mcp.tags.mcp_server).toBe("dbdog-mcp");
     expect(mcp.intent).toBe("look up trace");
     expect(mcp.input).toBe(JSON.stringify({ trace_id: "beef" }));
     expect(mcp.output).toContain("socket dropped");
